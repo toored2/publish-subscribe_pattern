@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<script>
+    let houseobj = {} //发布者
+    houseobj.list = {} //缓存列表 []->{} 省去了深拷贝过程 性能优化
+
+    //增加订阅者
+    houseobj.listen = function (key,fn) {
+        // if(!this.list[key]){
+        //     this.list[key]=[]
+        // }else{
+        //     this.list.push(fn)
+        // }
+        //判断有无
+        (this.list[key] || (this.list[key] = [])).push(fn)
+    }
+
+    //发布消息
+    houseobj.trigger = function () {
+        console.log('---1-------',arguments)
+
+        //取出消息名称 类数组转换数组
+        let key = Array.prototype.shift.call(arguments) //得到第一个参数，key
+        let fns = this.list[key]
+        if(!fns || fns.length===0){
+            return
+        }
+        console.log('------2----',arguments) //此时的arguments不包含key('big' 'small')
+
+        for (var i=0,fn; fn = fns[i++]; ){
+            console.log(fn)
+            fn.apply(this,arguments) //发布消息附带的参数
+        }
+    }
+
+
+
+    //test
+    //订阅和发布时，增加key时，只给订阅过的人发布消息
+
+    //需求（订阅）
+    houseobj.listen('big',function (size) {
+        console.log('小红：我要买的房子是'+size+"平米")
+    })
+    houseobj.listen('small',function (size) {
+        console.log('小明：我要买的房子是'+size+"平米")
+    })
+
+    //发布
+    houseobj.trigger('big', 100)
+    houseobj.trigger('small',50)
+</script>
+<body>
+
+</body>
+</html>

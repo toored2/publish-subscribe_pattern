@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<script>
+
+    //把list想象成一个本子，用于记录有购房意向的人
+    // houseobj.listen 中的 this.list.push(fn) 把有购房意向的人记录在本子上
+    // houseobj.trigger 给本子上人人一个一个的打电话，告诉他们房源发布了
+
+    let houseobj = {} //发布者
+    houseobj.list = [] //缓存列表
+
+    //增加订阅者
+    houseobj.listen = function (fn) {
+        this.list.push(fn)
+    }
+
+    //发布消息
+    houseobj.trigger = function () {
+        for (var i=0,fn; fn=this.list.length;i++ ){
+            fn.apply(this,arguments) //发布消息附带的参数
+
+        }
+    }
+
+    //test
+
+    //需求（订阅）
+    houseobj.listen(function (size) {
+        console.log('小红：我要买的房子是'+size+"平米")
+    })
+    houseobj.listen(function (size) {
+        console.log('小明：我要买的房子是'+size+"平米")
+    })
+
+    //发布
+    houseobj.trigger(100)
+    houseobj.trigger(150)
+</script>
+<body>
+
+</body>
+</html>

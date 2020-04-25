@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<script>
+    //index3.html 的问题
+    // 会给每个对象都添加list listen trigger
+    // 用户和售楼处存在耦合
+
+
+    let Event = (function () {
+        let list ={},
+            listen = function (key,fn) {  //增加订阅者
+                //判断有无
+                (list[key] || (list[key] = [])).push(fn)
+            },
+            trigger = function () {   //发布消息
+
+                //取出消息名称 类数组转换数组
+                let key = Array.prototype.shift.call(arguments) //得到第一个参数，key
+                let fns = list[key]
+                if(!fns || fns.length===0){
+                    return
+                }
+
+                for (var i=0,fn; fn = fns[i++]; ){
+                    fn.apply(this,arguments) //发布消息附带的参数
+                }
+            },
+            remove = function(key,fn){
+                let fns= list[key];
+                //如果没有订阅过
+                if(!fns){
+                    return false
+                }
+                //
+                if(!fn){
+                    fn && (fn.length = 0)
+                }else{ //比如某个人订阅了很多房型，删除某一种他不想要的房型
+                    console.log(123)
+                    for(let i = fns.length-1; i>=0; i--){
+                        let _fn =fns[i]
+
+                        if( _fn === fn){
+                            fns.splice(i,1)
+                        }
+                    }
+                }
+            };
+        return {
+            listen,
+            trigger,
+            remove
+        }
+    })()
+
+
+    //test
+    Event.listen('big',function (size) {
+        console.log('小明：我要买的房子是'+size+'平米')
+    })
+
+    Event.trigger('big',100)
+</script>
+<body>
+
+</body>
+</html>
+

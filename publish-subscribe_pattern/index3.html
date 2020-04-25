@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<script>
+    //index2.html存在的问题
+    // 订阅和发布功能与发布者houseobj耦合
+
+
+    //定义一个对象
+    let event ={
+        list:{},
+        listen: function (key,fn) {  //增加订阅者
+            //判断有无
+            (this.list[key] || (this.list[key] = [])).push(fn)
+        },
+        trigger: function () {   //发布消息
+
+            //取出消息名称 类数组转换数组
+            let key = Array.prototype.shift.call(arguments) //得到第一个参数，key
+            let fns = this.list[key]
+            if(!fns || fns.length===0){
+                return
+            }
+
+            for (var i=0,fn; fn = fns[i++]; ){
+                fn.apply(this,arguments) //发布消息附带的参数
+            }
+        }
+    }
+    //删除订阅
+    event.remove= function(key,fn){
+        let fns= this.list[key];
+        //如果没有订阅过
+        if(!fns){
+            return false
+        }
+        //
+        if(!fn){
+            fn && (fn.length = 0)
+        }else{ //比如某个人订阅了很多房型，删除某一种他不想要的房型
+            console.log(123)
+            for(let i = fns.length-1; i>=0; i--){
+                let _fn =fns[i]
+
+                //秀技巧的讲师也让人无语,谁能记住这么多运算符的优先级
+                // _fn === fn && (fns.splice(i,1))
+                if( _fn === fn){
+                    fns.splice(i,1)
+                }
+            }
+        }
+    }
+
+
+    //使所有的普通对象都具有发布订阅功能
+    let initEvent = function(obj){
+        for ( let i in event) {
+            obj[i] = event[i]
+        }
+    }
+    let houseobj = {} //发布者
+    initEvent(houseobj)
+
+
+
+    //test
+
+    //需求（订阅）
+    //同一个人订阅两个房型
+    houseobj.listen('big',fn1=function () {
+        console.log('小明：我要买的房子是100平米')
+    })
+    houseobj.listen('big',fn2=function () {
+        console.log('小明：我要买的房子是150平米')
+    })
+
+    //删除一个订阅一个房型
+    houseobj.remove('big',fn1)
+    //发布
+    houseobj.trigger('big')
+</script>
+<body>
+
+</body>
+</html>

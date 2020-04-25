@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    <div id="app">
+        订阅视图-1：<span class="box-1"></span>
+        订阅视图-2：<span class="box-2"></span>
+    </div>
+    <script src="./vue.js"></script>
+    <script>
+        var dataObj ={}
+        dataHijack({
+            data: dataObj,
+            tag: 'view-1',
+            datakey: 'one',
+            selector: '.box-1'
+        })
+        dataHijack({
+            data: dataObj,
+            tag: 'view-2',
+            datakey: 'two',
+            selector: '.box-2'
+        })
+        dataObj.one ='第一个值'
+        dataObj.two ='第二个值'
+    </script>
+</body>
+</html>
+
